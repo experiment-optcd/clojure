@@ -1,18 +1,23 @@
-name: Test
 
-on:
-  push:
-  workflow_dispatch:
-
+name: Modified Test
 jobs:
   test:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest] # macOS-latest, windows-latest]
-        java-version: ["8", "11", "17", "21"]
-        distribution: ["temurin", "corretto"]
-        profile: ["test-direct", "test-no-direct"]
+        os:
+        - ubuntu-latest
+        java-version:
+        - '8'
+        - '11'
+        - '17'
+        - '21'
+        distribution:
+        - temurin
+        - corretto
+        profile:
+        - test-direct
+        - test-no-direct
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
@@ -21,6 +26,11 @@ jobs:
       with:
         java-version: ${{ matrix.java-version }}
         distribution: ${{ matrix.distribution }}
-        cache: 'maven'
+        cache: maven
     - name: Build with Maven
       run: mvn -ntp -B -P${{ matrix.profile }} clean test
+    name: test (${{ matrix.os }}, ${{ matrix.java-version }}, ${{ matrix.distribution
+      }}, ${{ matrix.profile }})
+'on':
+- push
+- workflow_dispatch
